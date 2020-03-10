@@ -1,0 +1,18 @@
+create database twitter;
+use database twitter;
+
+CREATE TABLE usuario(
+id_usuario INTEGER NOT NULL AUTOINCREMENT,
+nombre VARCHAR(50) NOT NULL,
+
+);
+
+CREATE TABLE comentario(
+id_comentario INTEGER NOT NULL AUTOINCREMENT,
+id_usuario INTEGER  NOT NULL,
+fecha_publicacion DATE NOT NULL,
+contenido VARCHAR(150),
+id_respuesta_a INTEGER NOT NULL,
+PRIMARY KEY (id_comentario),
+
+);
