@@ -2,16 +2,12 @@ package com.itesm.webapps.primer_parcial.example;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
-
+import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,82 +45,84 @@ public class StrutsJsonDAOTest {
 		StrutsJsonDAO.create_table("comentario");
 		StrutsJsonDAO.populate_table("comentario");
 	}
-	@Test
-	public void dummyTest() {
-		
-	}
-//	@Test
-//	public void readFile() {
-//		String filePath = new File("").getAbsolutePath();
-//		filePath += "\\src\\test\\java\\com\\itesm\\webapps\\primer_parcial\\example\\scripts_db\\";
-//		filePath += "create_table_usuario.sql";
-//		File file = new File(filePath);
-//		BufferedReader br;
-//		try {
-//			br = new BufferedReader(new FileReader(file));
-//			String ddl_content;
-//			while((ddl_content = br.readLine()) != null)	
-//			br.close();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//			fail("Error al encontrar el archivo");
-//		} catch(IOException ioe) {
-//			ioe.printStackTrace();
-//			fail("Error con los mecanismos de I/O");
-//		}		
-//		return;
-//	}
 	
-
-//	@After
-//	public void tearDown() throws Exception {
-//	}
-//	/*Si la tabla se encuentra vacia envar msj por consola indicando que esta vacia*/
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testFetchUsuario()  {
-//		 rs = StrutsJsonDAO.fetchUsuario();
-//		try {
-//			if(rs != null) {
-//				while(rs.next()) {
-//					Usuario usuario = new Usuario();
-//					usuario.setId_usuario(rs.getInt(1));
-//					usuario.setNombre(rs.getString(2));
-//					usuario.setPass(rs.getString(3));
-//					
-//					lista_usuario.add(usuario); 
-//				}
-//			}
-//			System.out.println("FETCH USUARIOS");
+	@Test
+	public void testCrearUsuario() {
+		int generatedKey = StrutsJsonDAO.insertarUsuario("Mariana", "tec45");
+		assertEquals("Hubo un error al insertar el registro de USUARIO", 6, generatedKey);
+	}
+	
+	@Test
+	public void testCrearComentario() {
+		//Creamos al usuario Mariana para que pueda responderle al Usuario David
+		int generatedKey = StrutsJsonDAO.insertarUsuario("Mariana", "tec45");
+		
+		boolean isRegistered = StrutsJsonDAO.insertarComentario(generatedKey, "Hola David soy Mariana y ya te comente", 7);
+		assertTrue("Hubo un error al insertar el COMENTARIO", isRegistered);
+	}
+	@Test
+	public void testModificarComentarioCreadoPorElMismoUsuario() {
+		//Se modificara el comentario 6 realizado por el usuario 1(Carlos)
+		//Se pondrá a pueba la correcta modificación del comentario realizado por el mismo usuario 
+		//que creo el comentario/publicación
+		int rowsAffected = StrutsJsonDAO.modificarComentario(6, 1, "He modificado mi publicación");
+		assertEquals(1, rowsAffected);
+	}
+	
+	@Test
+	public void testModificarComentarioCreadoPorOtroUsuario() {
+		//Se modificara el comentario 6 realizado por el usuario 1(Carlos)
+		//Se pondrá a pueba la correcta modificación del comentario realizado por el mismo usuario 
+		//que creo el comentario/publicación
+		int rowsAffected = StrutsJsonDAO.modificarComentario(6, 2, "He modificado mi publicación");
+		assertEquals(0, rowsAffected);
+	}
+	
+	/*Si la tabla se encuentra vacia envar msj por consola indicando que esta vacia*/
+	@Test
+	public void testFetchUsuario()  {
+		 rs = StrutsJsonDAO.fetchTabla("usuario");
+		try {
+			if(rs != null) {
+				while(rs.next()) {
+					Usuario usuario = new Usuario();
+					usuario.setId_usuario(rs.getInt(1));
+					usuario.setNombre(rs.getString(2));
+					usuario.setPass(rs.getString(3));
+					
+					lista_usuario.add(usuario); 
+				}
+			}
+			System.out.println("FETCH USUARIOS");
 //			for (Usuario usuario : lista_usuario) {
 //				System.out.println("id_usuario: " + usuario.getId_usuario() + "   nombre: " + usuario.getNombre() + "   Password: " + usuario.getPass());
 //			}
-////			assertThat(lista_usuario, hasItems(
-////					new Usuario(1, "Alan", "robocop")
-////					));
-//			//assertArrayEquals(lista_usuario, lista_usuario_manual);
-//			return;
-//		} catch(SQLException e) {
-//			e.printStackTrace();
-//			fail("Fetching Users failed");
-//		}
-//	}
+//			assertThat(lista_usuario, hasItems(
+//					new Usuario(1, "Alan", "robocop")
+//					));
+			//assertArrayEquals(lista_usuario, lista_usuario_manual);
+			return;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			fail("Fetching Users failed");
+		}
+	}
 	
-//	@Test
-//	public void testFetchComentario() {
-//		rs = StrutsJsonDAO.fetchComentario();
-//		try {
-//			if(rs != null) {
-//				while(rs.next()) {
-//					Comentario comentario = new Comentario();
-//					comentario.setId_comentario(rs.getInt(1));
-//					comentario.setId_usuario(rs.getInt(2));
-//					comentario.setFecha_publicacion(rs.getDate(3));
-//					comentario.setContenido(rs.getString(4));
-//					comentario.setId_respuesta_a(rs.getInt(5));
-//					lista_comentario.add(comentario);
-//				}
-//			}	
+	@Test
+	public void testFetchComentario() {
+		rs = StrutsJsonDAO.fetchTabla("comentario");
+		try {
+			if(rs != null) {
+				while(rs.next()) {
+					Comentario comentario = new Comentario();
+					comentario.setId_comentario(rs.getInt(1));
+					comentario.setId_usuario(rs.getInt(2));
+					comentario.setFecha_publicacion(rs.getDate(3).toLocalDate());
+					comentario.setContenido(rs.getString(4));
+					comentario.setId_respuesta_a(rs.getInt(5));
+					lista_comentario.add(comentario);
+				}
+			}	
 //				System.out.println("\n\n");
 //				System.out.println("FETCH COMENTARIOS");
 //				for (Comentario comentario : lista_comentario) {
@@ -132,67 +130,42 @@ public class StrutsJsonDAOTest {
 //							"   fecha_publicacion: " + comentario.getFecha_publicacion() + "   contenido: " + comentario.getContenido() 
 //							+ "   id_respuesta_a: " + comentario.getId_respuesta_a());
 //				}
-//				return;
-//		} catch(SQLException e) {
-//			e.printStackTrace();
-//			fail("Fetching Comentarios Failed");
-//		}
-//	}
+				return;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			fail("Fetching Comentarios Failed");
+		}
+	}
 	
-//	@Test
-//	public void testGetUsuarioById() throws Exception {
-//		int id_usuario = 1;
-//		Usuario usuario = new Usuario();
-//		rs = StrutsJsonDAO.getUsuarioByID(id_usuario);
-//		
-//		if(rs != null) {
-//			while(rs.next()) {
-//				
-//				usuario.setId_usuario(rs.getInt(1));
-//				usuario.setNombre(rs.getString(2));
-//				usuario.setPass(rs.getString(3));					
-//			}
-//			System.out.println("\n\n");
-//			System.out.println("USUARIO POR ID");
-//			System.out.println("id_usuario: " + usuario.getId_usuario() + "   nombre: " + usuario.getNombre() 
-//			+ "   Passord: " + usuario.getPass());
-//			return;
-//		}
-//		
-//		fail("Getting User by ID Failed");
-//		
-//	}
+	@Test
+	public void testGetUsuarioById() throws Exception {
+		int id_usuario = 1;
+		Usuario usuario_actual;
+		Usuario usuario_esperado = new Usuario(1, "Carlos", "cora-98");
+		usuario_actual = StrutsJsonDAO.getUsuarioByID(id_usuario);
+		assertEquals(usuario_esperado.getId_usuario(), usuario_actual.getId_usuario());
+		assertEquals(usuario_esperado.getNombre(), usuario_actual.getNombre());
+		assertEquals(usuario_esperado.getPass(), usuario_actual.getPass());
+	}
 	
-//	@Test
-//	public void testGetComentarioById() throws Exception {
-//		int id_comentario = 3;
-//		Comentario comentario = new Comentario();
-//		rs = StrutsJsonDAO.getComentarioByID(id_comentario);
-//		
-//		if(rs != null) {
-//			while(rs.next()) {
-//				
-//				comentario.setId_comentario(rs.getInt(1));
-//				comentario.setId_usuario(rs.getInt(2));		
-//				comentario.setFecha_publicacion(rs.getDate(3));
-//				comentario.setContenido(rs.getString(4));
-//				comentario.setId_respuesta_a(rs.getInt(5));
-//			}
-//			System.out.println("\n\n");
-//			System.out.println("COMENTARIO POR ID");
-//			System.out.println("id_comentario: " + comentario.getId_comentario() + "   id_usuario: " + comentario.getId_usuario() + "   fecha_publicacion: " + comentario.getFecha_publicacion() + "   contenido: " + comentario.getContenido() + "   id_respuesta_a: " + comentario.getId_respuesta_a());
-//			return;
-//		}
-//		
-//		fail("Getting User by ID Failed");
-//		
-//	}
+	@Test
+	public void testGetComentarioById() throws Exception {
+		int id_comentario = 3;
+		Comentario comentario_actual = new Comentario();
+		Comentario comentario_esperado = new Comentario(3,5, LocalDate.of(2020, Month.MARCH, 17), "Hola Carlos soy Fernando -> Alan", 2);
+		comentario_actual = StrutsJsonDAO.getComentarioByID(id_comentario);
+		assertEquals(comentario_esperado.getId_comentario(), comentario_actual.getId_comentario());
+		assertEquals(comentario_esperado.getId_usuario(), comentario_actual.getId_usuario());
+		assertEquals(comentario_esperado.getFecha_publicacion(), comentario_actual.getFecha_publicacion());
+		assertEquals(comentario_esperado.getContenido(), comentario_actual.getContenido());
+		assertEquals(comentario_esperado.getId_respuesta_a(), comentario_actual.getId_respuesta_a());
+	}
 		
 	@Test
-	public void testEliminarComentarioMedio() throws Exception{
+	public void testEliminarComentario() throws Exception{
 		int id_comentario = 5;
 		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
-		assertEquals("The message with ID: " + id_comentario +" was NOT deleted",true, eliminado);
+		assertTrue("The message with ID: " + id_comentario +" was NOT deleted",eliminado);
 	}
 
 }

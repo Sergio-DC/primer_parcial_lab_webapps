@@ -1,13 +1,24 @@
 package com.itesm.webapps.primer_parcial.pojo;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public class Comentario {
+public class Comentario {	
 	private int id_comentario;
 	private int id_usuario;
-	private Date fecha_publicacion;
+	private LocalDate fecha_publicacion;
 	private String contenido;
 	private int id_respuesta_a;
+	
+	public Comentario() {}
+	
+	public Comentario(int id_comentario, int id_usuario, LocalDate fecha_publicacion, String contenido, int id_respuesta_a) {
+		super();
+		this.id_comentario = id_comentario;
+		this.id_usuario = id_usuario;
+		this.setFecha_publicacion(fecha_publicacion);
+		this.contenido = contenido;
+		this.id_respuesta_a = id_respuesta_a;
+	}
 	public int getId_comentario() {
 		return id_comentario;
 	}
@@ -20,12 +31,6 @@ public class Comentario {
 	public void setId_usuario(int id_usuario) {
 		this.id_usuario = id_usuario;
 	}
-	public Date getFecha_publicacion() {
-		return fecha_publicacion;
-	}
-	public void setFecha_publicacion(Date fecha_publicacion) {
-		this.fecha_publicacion = fecha_publicacion;
-	}
 	public String getContenido() {
 		return contenido;
 	}
@@ -37,5 +42,13 @@ public class Comentario {
 	}
 	public void setId_respuesta_a(int id_respuesta_a) {
 		this.id_respuesta_a = id_respuesta_a;
+	}
+
+	public LocalDate getFecha_publicacion() {
+		return fecha_publicacion;
+	}
+
+	public void setFecha_publicacion(LocalDate fecha_publicacion) {
+		this.fecha_publicacion = fecha_publicacion;
 	}
 }
