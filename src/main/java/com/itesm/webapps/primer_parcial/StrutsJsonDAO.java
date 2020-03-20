@@ -36,7 +36,7 @@ public class StrutsJsonDAO {
 	 * Inserta un registro de tipo usuario
 	 * @param nombre
 	 * @param password
-	 * @return devuelve el id_usuario que fue registrado
+	 * @return devuelve el id_usuario registrado, en caso de no poder inserta devuelve -1
 	 */
 	public static int insertarUsuario(String nombre, String password) {
 		String insertQuery = "INSERT INTO usuario (nombre, pass)";
@@ -118,6 +118,27 @@ public class StrutsJsonDAO {
 				return usuario;
 			}
 		} catch (SQLException e) {e.printStackTrace();}
+		return null;
+	}
+	
+	public static Usuario getUsuarioByNameAndPass(String nombre, String pass) {
+		ResultSet rs = null;
+		Usuario usuario = new Usuario();
+		String sql = "SELECT * FROM usuario WHERE nombre = ? AND pass = ?";
+		try {
+			PreparedStatement ps = conn().prepareStatement(sql);
+			ps.setString(1, nombre);
+			ps.setString(2, pass);
+			rs = ps.executeQuery();
+			if(rs != null) {
+				while (rs.next()) {
+					usuario.setId_usuario(rs.getInt(1));
+					usuario.setNombre(rs.getString(2));
+					usuario.setPass(rs.getString(3));
+				}
+				return usuario;
+			}
+		} catch (Exception e) {e.printStackTrace();}
 		return null;
 	}
 	
