@@ -1,10 +1,9 @@
+package action;
 import org.apache.struts2.StrutsTestCase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import com.itesm.webapps.primer_parcial.RegistrarAction;
-import com.itesm.webapps.primer_parcial.StrutsJsonDAO;
+import com.itesm.webapps.primer_parcial.action.RegistrarAction;
+import com.itesm.webapps.primer_parcial.dao.StrutsJsonDAO;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -17,8 +16,8 @@ public class RegistrarTest extends StrutsTestCase {
 	@Test
 	public void testRegistarUsuario() throws Exception{
 		//Crear tablas y llenarlas de registros de prueba
-		StrutsJsonDAO.dropTable("comentario");//Si la tabla comentario no existe no tomar acción
-		StrutsJsonDAO.dropTable("usuario");//Si la tabla comentario no existe no tomar acción
+		StrutsJsonDAO.dropTable("comentario");
+		StrutsJsonDAO.dropTable("usuario");
 		StrutsJsonDAO.create_table("usuario");
 		StrutsJsonDAO.populate_table("usuario");
 		StrutsJsonDAO.create_table("comentario");
@@ -32,7 +31,7 @@ public class RegistrarTest extends StrutsTestCase {
 		ActionProxy actionProxy = getActionProxy("/registrar.action");
 		RegistrarAction action = (RegistrarAction) actionProxy.getAction();
 		
-		assertNotNull("El objecto 'action' es nulo pero no debería serlo", action);
+		assertNotNull("El objeto 'action' es nulo pero no debería serlo", action);
 		String result = actionProxy.execute();
 		assertEquals("El método 'registrarUsuario()' debio retornar " + 
 		ActionSupport.SUCCESS + " pero no lo hizo", ActionSupport.SUCCESS, result);

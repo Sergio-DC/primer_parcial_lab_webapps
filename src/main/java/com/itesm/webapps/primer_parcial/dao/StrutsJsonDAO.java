@@ -1,9 +1,7 @@
-package com.itesm.webapps.primer_parcial;
+package com.itesm.webapps.primer_parcial.dao;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,8 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import org.apache.struts2.util.tomcat.buf.UDecoder;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.sql.Date;
 
@@ -21,8 +20,13 @@ import com.itesm.webapps.primer_parcial.pojo.Comentario;
 import com.itesm.webapps.primer_parcial.pojo.Usuario;
 
 public class StrutsJsonDAO {
+	//private static String filePath = new File("").getAbsolutePath();
 	
-	// database connection method
+	/**
+	 * El siguiete método permite conectarnos a la base de datos 'twitter' 
+	 * @return devuelve la Conexión a la BD para poder realizar consultas o manipulación de datos a esta
+	 * @throws Exception
+	 */
 	public static Connection conn() throws Exception {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -33,10 +37,10 @@ public class StrutsJsonDAO {
 		}
 	}
 	/**
-	 * Inserta un registro de tipo usuario
-	 * @param nombre
-	 * @param password
-	 * @return devuelve el id_usuario registrado, en caso de no poder inserta devuelve -1
+	 * Inserta un registro de tipo usuario en la BD, indicando el 'nombre' y 'password'
+	 * @param nombre nombre del usuario
+	 * @param password 
+	 * @return devuelve el id_usuario registrado, en caso de no poder registrarse devuelve -1
 	 */
 	public static int insertarUsuario(String nombre, String password) {
 		String insertQuery = "INSERT INTO usuario (nombre, pass)";
@@ -59,13 +63,13 @@ public class StrutsJsonDAO {
 		}		
 	}
 	/**
-	 * Inserta un registro en la tabla comentario
-	 * @param id_usuario
-	 * @param contenido
-	 * @param id_respuesta_a determina a que mensaje se realizo la réplica
+	 * Crea un nuevo comentario/publicacion, puede ser nueva o una réplica a un comentario
+	 * @param id_usuario identificador del usuario que hará la réplica
+	 * @param contenido es el mensaje que será publicado
+	 * @param id_respuesta_a determina a que publicación se realizo la réplica, si se deja NULL se interpreta como una nueva publicación
 	 * @return true si el registro se inserto correctamente
 	 */
-	public static boolean insertarComentario(int id_usuario, String contenido, int id_respuesta_a) {
+	public static boolean insertarComentario(int id_usuario, String contenido, Integer id_respuesta_a) {
 		String sql = "INSERT INTO comentario(id_usuario, fecha_publicacion, contenido, id_respuesta_a) VALUES(?,?,?,?)";
 		try {
 			PreparedStatement statement = conn().prepareStatement(sql);
@@ -73,7 +77,10 @@ public class StrutsJsonDAO {
 			//statement.setDate(2, new Date(fecha_publicacion.getTime()));
 			statement.setDate(2, new Date(new java.util.Date().getTime()));
 			statement.setString(3, contenido);
-			statement.setInt(4, id_respuesta_a);
+			if (id_respuesta_a != null)
+			   statement.setInt(4, id_respuesta_a);
+			else
+			   statement.setNull(4, Types.INTEGER);
 			statement.execute();
 			return true;
 		} catch (Exception e) {
@@ -82,25 +89,61 @@ public class StrutsJsonDAO {
 		}		
 	}
 	/**
-	 * Recupera todos los registros de una tabla especificada
-	 * @nombre_tabla tabla de la que se recuperarán los registros 
+	 * Recupera todos los registros de la tabla USUARIO
+	 * @return una Lista de COMENTARIOS
 	 **/
-	public static ResultSet fetchTabla(String nombre_tabla) {
+	public static List<Usuario> fetchUsuario() {
 		ResultSet rs = null;
+		List<Usuario> lista_usuario = new ArrayList<Usuario>();
+		String sql = "SELECT * FROM usuario";
 		try {
 			Statement stmt = conn().createStatement();
-			rs = stmt.executeQuery("SELECT * FROM " + nombre_tabla);
-			return rs;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+			rs = stmt.executeQuery(sql);			
+			if(rs != null) {
+				while(rs.next()) {
+					Usuario usuario = new Usuario();
+					usuario.setId_usuario(rs.getInt(1));
+					usuario.setNombre(rs.getString(2));
+					usuario.setPass(rs.getString(3));
+					lista_usuario.add(usuario);
+				}
+				return lista_usuario;
+			}	
+		} catch (Exception e) {e.printStackTrace();}
+		return null;
+	}
+	/**
+	 * Recupera todos los registros de la tabla COMENTARIO
+	 * @return una Lista de COMENTARIOS
+	 **/
+	public static List<Comentario> fetchComentario() {
+		ResultSet rs = null;
+		List<Comentario> lista_comentario = new ArrayList<Comentario>();
+		String sql = "SELECT * FROM comentario";
+		try {
+			Statement stmt = conn().createStatement();
+			rs = stmt.executeQuery(sql);			
+			if(rs != null) {
+				while(rs.next()) {
+					Comentario comentario = new Comentario();
+					comentario.setId_comentario(rs.getInt(1));
+					comentario.setId_usuario(rs.getInt(2));
+					comentario.setFecha_publicacion(rs.getDate(3).toLocalDate());
+					comentario.setContenido(rs.getString(4));
+					comentario.setId_respuesta_a(rs.getInt(5));
+					lista_comentario.add(comentario);
+				}
+				return lista_comentario;
+			}	
+		} catch (Exception e) {e.printStackTrace();}
+		return null;
 	}	
 	
-	/**Recupera un registro de la tabla Usuario
-	 * @tabla de ahí recuperaremos el registro
-	 * @id identificador de un registro
-	 * */
+	/**
+	 * Recupera un registro de la tabla Usuario indicando el id_usuario
+	 * @id_usuario identificador del usuario
+	 * @return devuelve el registro encontrado en formato de objeto USUARIO
+	 **/
 	public static Usuario getUsuarioByID(int id_usuario) throws Exception {
 		ResultSet rs = null;
 		Usuario usuario = new Usuario();
@@ -121,6 +164,13 @@ public class StrutsJsonDAO {
 		return null;
 	}
 	
+	/**
+	 * Recupera un registro de la tabla USUARIO indicando nombre y password del usuario
+	 * Este método nos asistirá en el escenario del Login
+	 * @param nombre nombre del usuario
+	 * @param pass password del usuario
+	 * @return devuelve el registro encontrado en formato de objeto USUARIO
+	 */
 	public static Usuario getUsuarioByNameAndPass(String nombre, String pass) {
 		ResultSet rs = null;
 		Usuario usuario = new Usuario();
@@ -142,9 +192,10 @@ public class StrutsJsonDAO {
 		return null;
 	}
 	
-	/** Recupera un registro de la tabla Comentario
-	 * @id
-	 * */
+	/** Recupera un registro de la tabla COMENTARIO indicando el identificador del comentario
+	 * @id_comentario es el identificador único que tiene asociado un comentario
+	 * @return devuelve el registro encontrado en formato de objeto COMENTARIO
+	 **/
 	public static Comentario getComentarioByID(int id_comentario) throws Exception {
 		ResultSet rs = null;
 		Comentario comentario = new Comentario();
@@ -172,9 +223,9 @@ public class StrutsJsonDAO {
 		return null;
 	}
 	/**
-	 * La siguiente función elimina el comentario elegido junto con sus hijos
-	 * o réplicas que tenga asociados
-	 * @id_comentario número de comentario que se eliminará 
+	 * La siguiente función elimina el comentario elegido con sus hijos o réplicas que tenga relacionadas
+	 * @id_comentario número de comentario que será eliminado
+	 * @return true si el comentario ha sido eliminado
 	 **/
 	public static boolean eliminarComentario(int id_comentario) throws Exception {
 		ResultSet rs = null;		
@@ -205,8 +256,8 @@ public class StrutsJsonDAO {
 	 * de su interés, solo podrá modificar comentarios que hayan sido creados por el
 	 * @param id_comentario
 	 * @param id_usuario
-	 * @param contenido
-	 * @return
+	 * @param contenido es el texto/contenido que tendrá la publicación
+	 * @return el número de comentario que fue modificado|0 si no se modifico algún comentario
 	 */
 	public static int modificarComentario(int id_comentario, int id_usuario, String contenido) {
 		String modify_query = "UPDATE comentario SET fecha_publicacion = ?, contenido = ?";
@@ -228,8 +279,14 @@ public class StrutsJsonDAO {
 	}
 	
 	/*Funciones para testing*/
+	
+	/**
+	 * Esta función desecha una tabla
+	 * @param table nombre de la tabla, opciones (usuario|comentario)
+	 * @return true si se ha eliminado la tabla de la Base de datos
+	 */
 	public static boolean dropTable(String table) {
-		String sql = "DROP TABLE " + table;
+		String sql = "DROP TABLE IF EXISTS " + table;
 		
 		try {
 			Statement statement = conn().createStatement();
@@ -241,9 +298,14 @@ public class StrutsJsonDAO {
 		}
 		
 	}
+	/**
+	 * Esta función crea una tabla, solo hay 2 opciones de tabla
+	 * @param table nombre de la tabla, opciones (usuario|comentario)
+	 * @return true si la tabla se creo correctamente
+	 */
 	public static boolean create_table(String table) {
 		String filePath = new File("").getAbsolutePath();
-		filePath += "\\src\\test\\java\\com\\itesm\\webapps\\primer_parcial\\example\\scripts_db\\";
+		filePath += "\\src\\test\\java\\scripts_db_test\\";
 		filePath += "create_table_"+ table + ".sql";
 		String ddl_statement = "";//Contiene la sentencia ddl para crear una tabla
 		File file = new File(filePath);
@@ -266,11 +328,13 @@ public class StrutsJsonDAO {
 		}
 	}
 	/**
-	 * @table nombre de la tabla que será llenada por registros de prueba
+	 * Llena una tabla de registros de un archivo de prueba sql
+	 * @table nombre de la tabla que será llenada, opciones (usuario|comentario)
+	 * @return true si la tabla se lleno sin errores
 	 **/
 	public static boolean populate_table(String table) {
 		String filePath = new File("").getAbsolutePath();
-		filePath += "\\src\\test\\java\\com\\itesm\\webapps\\primer_parcial\\example\\scripts_db\\";
+		filePath += "\\src\\test\\java\\scripts_db_test\\";
 		filePath += "insert_"+ table + ".sql";
 		BufferedReader br;	
 		

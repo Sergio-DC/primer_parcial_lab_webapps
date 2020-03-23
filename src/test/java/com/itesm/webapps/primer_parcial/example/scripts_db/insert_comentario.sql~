@@ -1,3 +1,0 @@
-INSERT INTO comentario(id_usuario, fecha_publicacion, contenido, id_respuesta_a) VALUES(1, '2020-03-17', "Hola soy el primer comentario de Alan", NULL);
-INSERT INTO comentario(id_usuario, fecha_publicacion, contenido, id_respuesta_a) VALUES(2, '2020-03-17', "Hola Alan tu comentario es bueno", 1);
-INSERT INTO comentario(id_usuario, fecha_publicacion, contenido, id_respuesta_a) VALUES(5, '2020-03-18', "Hola Carlos soy David :)", 2);
