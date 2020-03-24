@@ -7,7 +7,7 @@ public class Comentario {
 	private int id_usuario;
 	private LocalDate fecha_publicacion;
 	private String contenido;
-	private int id_respuesta_a;
+	private Integer id_respuesta_a;
 	
 	public Comentario() {}
 	
@@ -37,10 +37,12 @@ public class Comentario {
 	public void setContenido(String contenido) {
 		this.contenido = contenido;
 	}
-	public int getId_respuesta_a() {
+	
+	public Integer getId_respuesta_a() {
 		return id_respuesta_a;
 	}
-	public void setId_respuesta_a(int id_respuesta_a) {
+
+	public void setId_respuesta_a(Integer id_respuesta_a) {
 		this.id_respuesta_a = id_respuesta_a;
 	}
 

@@ -64,16 +64,28 @@ public class StrutsJsonDAOTest {
 		assertTrue("Hubo un error al responderle al mensaje con ID: " + 7, isRegistered);
 	}
 	@Test
-	public void testModificarComentarioCreadoPorElMismoUsuario() {
+	public void testModificarComentarioCreadoPorElMismoUsuario() throws Exception{
 		//Se modificara el comentario 6 realizado por el usuario 1(Carlos)
 		//Se pondrá a pueba la correcta modificación del comentario realizado por el mismo usuario 
 		//que creo el comentario/publicación
 		int rowsAffected = StrutsJsonDAO.modificarComentario(6, 1, "He modificado mi publicación");
 		assertEquals(1, rowsAffected);
+		
+		rowsAffected = StrutsJsonDAO.modificarComentario(5, 5, "Soy una actulización del comentario anterior");
+		assertEquals(1, rowsAffected);
 	}
 	
 	@Test
-	public void testModificarComentarioCreadoPorOtroUsuario() {
+	public void testModificarOtroComentarioCreadoPorElMismoUsuario() throws Exception{
+		//Se modificara el comentario 6 realizado por el usuario 1(Carlos)
+		//Se pondrá a pueba la correcta modificación del comentario realizado por el mismo usuario 
+		//que creo el comentario/publicación
+		int rowsAffected = StrutsJsonDAO.modificarComentario(7, 3, "Soy una actulización del comentario anterior");
+		assertEquals(1, rowsAffected);
+	}
+	
+	@Test
+	public void testModificarComentarioCreadoPorOtroUsuario() throws Exception{
 		//Se modificara el comentario 6 realizado por el usuario 1(Carlos)
 		//Se pondrá a pueba la correcta modificación del comentario realizado por el mismo usuario 
 		//que creo el comentario/publicación

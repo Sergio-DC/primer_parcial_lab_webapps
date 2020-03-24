@@ -258,6 +258,33 @@ public class StrutsJsonDAO {
 		return null;
 	}
 	/**
+	 * Esta función permite a un usuario que haya accedido a su cuenta, modificar un comentario
+	 * de su interés, solo podrá modificar comentarios que hayan sido creados por el
+	 * Ojo: La fecha se actualiza automáticamente
+	 * @param id_comentario
+	 * @param id_usuario
+	 * @param contenido es el texto/contenido que tendrá la publicación
+	 * @return el número filas que fueron modificada | 0 si no se modifico algún registro
+	 */
+	public static int modificarComentario(int id_comentario, int id_usuario, String contenido) throws Exception{
+		String modify_query = "UPDATE comentario SET fecha_publicacion = ?, contenido = ? ";
+		modify_query += "WHERE id_comentario = ? AND id_usuario = ?";
+		try {
+			PreparedStatement ps = conn().prepareStatement(modify_query);
+			ps.setDate(1, new Date(new java.util.Date().getTime()));
+			ps.setString(2 , contenido);
+			ps.setInt(3, id_comentario);
+			ps.setInt(4, id_usuario);
+			int rowsAffected = ps.executeUpdate();
+			System.out.println("rows: " + rowsAffected);
+			return rowsAffected;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}				
+	}
+	
+	/**
 	 * La siguiente función elimina el comentario elegido con sus hijos o réplicas que tenga relacionadas
 	 * @id_comentario número de comentario que será eliminado
 	 * @return true si el comentario ha sido eliminado
@@ -285,34 +312,7 @@ public class StrutsJsonDAO {
 			e.printStackTrace();
 			return false;
 		}		
-	}
-	/**
-	 * Esta función permite a un usuario que haya accedido a su cuenta, modificar un comentario
-	 * de su interés, solo podrá modificar comentarios que hayan sido creados por el
-	 * @param id_comentario
-	 * @param id_usuario
-	 * @param contenido es el texto/contenido que tendrá la publicación
-	 * @return el número de comentario que fue modificado|0 si no se modifico algún comentario
-	 */
-	public static int modificarComentario(int id_comentario, int id_usuario, String contenido) {
-		String modify_query = "UPDATE comentario SET fecha_publicacion = ?, contenido = ?";
-		modify_query += "WHERE id_comentario = ? AND id_usuario = ?";
-		try {
-			PreparedStatement ps = conn().prepareStatement(modify_query);
-			ps.setDate(1, new Date(new java.util.Date().getTime()));
-			ps.setString(2 , contenido);
-			ps.setInt(3, id_comentario);
-			ps.setInt(4, id_usuario);
-			int rowsAffected = ps.executeUpdate();
-			
-			return rowsAffected;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 0;
-		}		
-		
-	}
-	
+	}	
 	/*Funciones para testing*/
 	
 	/**
