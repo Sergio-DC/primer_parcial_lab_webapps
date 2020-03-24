@@ -103,6 +103,16 @@ public class StrutsJsonDAOTest {
 	}
 	
 	@Test
+	public void testFetchComentarioMejorado() {
+		List<ComentarioUsuario> lista_comentario_usuario =  StrutsJsonDAO.fetchComentarioMejorado();
+		 for (ComentarioUsuario comentario_usuario : lista_comentario_usuario) {
+				System.out.println(comentario_usuario.getContenido());
+			}
+		assertNotEquals("La 'lista de COMENTARIO y USUARIO' es nula pero no debería serlo",
+				null, lista_comentario_usuario);
+	}
+	
+	@Test
 	public void testGetUsuarioById() throws Exception {
 		int id_usuario = 1;
 		Usuario usuario_actual;

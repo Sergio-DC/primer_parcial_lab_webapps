@@ -6,8 +6,6 @@
     <constant name="struts.enable.DynamicMethodInvocation" value="false"/>
     <constant name="struts.devMode" value="true"/>
 
-    <include file="example.xml"/>
-
     <package name="default" namespace="/" extends="struts-default">
 
         <default-action-ref name="index"/>
@@ -19,15 +17,20 @@
             </result>
         </action>
 
-		<action name="login" class="com.itesm.webapps.primer_parcial.LoginAction" method="validar">
+		<action name="login" class="com.itesm.webapps.primer_parcial.action.LoginAction" method="validar">
 				<result name="success">/welcome.jsp</result>
 				<result name="input">/login.jsp</result>
 		</action>
 		
-		<action name="registrar" class="com.itesm.webapps.primer_parcial.RegistrarAction" method ="registrarUsuario">
+		<action name="registrar" class="com.itesm.webapps.primer_parcial.action.RegistrarAction" method ="registrarUsuario">
 			<result name="success">/usuario_registrado.jsp</result>
 			<result name="input">/registrar.jsp</result>
 		</action>
+		
+		<action name="cargar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="mostrarPublicaciones">
+			<result name="success">/publicaciones_cargadas.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>		
     </package>
 
     <!-- Add addition packages and configuration here. -->

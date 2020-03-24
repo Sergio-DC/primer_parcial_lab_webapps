@@ -17,6 +17,7 @@ import java.util.List;
 import java.sql.Date;
 
 import com.itesm.webapps.primer_parcial.pojo.Comentario;
+import com.itesm.webapps.primer_parcial.pojo.ComentarioUsuario;
 import com.itesm.webapps.primer_parcial.pojo.Usuario;
 
 public class StrutsJsonDAO {
@@ -137,7 +138,41 @@ public class StrutsJsonDAO {
 			}	
 		} catch (Exception e) {e.printStackTrace();}
 		return null;
-	}	
+	}
+	
+	/**
+	 * Recupera todos los registros de la tabla COMENTARIO y
+	 * USUARIO, no se recuperan todos los campos, solo los necesario
+	 * para las publicaciones
+	 * @return una Lista de COMENTARIOS con Usuarios
+	 **/
+	public static List<ComentarioUsuario> fetchComentarioMejorado() {
+		ResultSet rs = null;
+		List<ComentarioUsuario> lista_comentario_usuario = new ArrayList<ComentarioUsuario>();
+		String sql = "select usuario.id_usuario, usuario.nombre, comentario.id_comentario, ";
+		sql +=	"comentario.fecha_publicacion, comentario.contenido, comentario.id_respuesta_a ";
+		sql +=	"from comentario JOIN usuario ";
+		sql +=	"ON usuario.id_usuario = comentario.id_usuario";
+		try {
+			Statement stmt = conn().createStatement();
+			rs = stmt.executeQuery(sql);			
+			if(rs != null) {
+				while(rs.next()) {
+					ComentarioUsuario comentario_usuario = new ComentarioUsuario();
+					
+					comentario_usuario.setId_usuario(rs.getInt(1));
+					comentario_usuario.setNombre(rs.getString(2));
+					comentario_usuario.setId_comentario(rs.getInt(3));
+					comentario_usuario.setFecha_publicacion(rs.getDate(4).toLocalDate());
+					comentario_usuario.setContenido(rs.getString(5));
+					comentario_usuario.setId_respuesta_a(rs.getInt(6));
+					lista_comentario_usuario.add(comentario_usuario);
+				}
+				return lista_comentario_usuario;
+			}	
+		} catch (Exception e) {e.printStackTrace();}
+		return null;
+	}
 	
 	/**
 	 * Recupera un registro de la tabla Usuario indicando el id_usuario
