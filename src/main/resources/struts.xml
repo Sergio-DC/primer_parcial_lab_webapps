@@ -30,7 +30,18 @@
 		<action name="cargar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="mostrarPublicaciones">
 			<result name="success">/publicaciones_cargadas.jsp</result>
 			<result name="error">/error.jsp</result>
-		</action>		
+		</action>
+		
+		<action name="crear_nuevo_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="crearNuevoContenido">
+			<result name="success">/welcome.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<action name="modificar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="modificar_contenido">
+			<result name="success">/welcome.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+					
     </package>
 
     <!-- Add addition packages and configuration here. -->
