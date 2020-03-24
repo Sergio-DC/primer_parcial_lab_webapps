@@ -36,7 +36,7 @@ public class PublicacionesAction extends ActionSupport{
 	/*El siguiente método permite al usuario modificar un comentario siempre y cuando el lo haya creado
 	 * Ojo: la fecha se actualiza autómaticamente cuando actualizamos el comentario
 	 * */
-	public String modificar_contenido() {
+	public String modificarContenido() {
 		int noCommentModificado = 0;
 		try {
 			noCommentModificado = StrutsJsonDAO.modificarComentario(comentarioBean.getId_comentario(), comentarioBean.getId_usuario(), comentarioBean.getContenido());
@@ -48,6 +48,20 @@ public class PublicacionesAction extends ActionSupport{
 			return ERROR;
 		else
 			return SUCCESS;
+	}
+	
+	/*El siguiente método elimina una publicación*/
+	public String eliminarContenido() {
+		boolean eliminado = false;
+		try {
+			eliminado = StrutsJsonDAO.eliminarComentario(comentarioBean.getId_comentario());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		if(eliminado)
+			return SUCCESS;
+		else
+			return ERROR;
 	}
 	
 	public Comentario getComentarioBean() {

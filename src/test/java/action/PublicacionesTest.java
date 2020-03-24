@@ -82,5 +82,43 @@ public class PublicacionesTest extends StrutsTestCase{
 		assertEquals("El método 'modificarPublicacion()' debio retornar " + 
 		ActionSupport.SUCCESS + " pero no lo hizo", ActionSupport.SUCCESS, result);
 	}
+	
+	@Test
+	public void testEliminarPublicacion() throws Exception {
+		StrutsJsonDAO.dropTable("comentario");
+		StrutsJsonDAO.dropTable("usuario");
+		StrutsJsonDAO.create_table("usuario");
+		StrutsJsonDAO.populate_table("usuario");
+		StrutsJsonDAO.create_table("comentario");
+		StrutsJsonDAO.populate_table("comentario");
+		request.setParameter("comentarioBean.id_comentario", "3");
+		
+		ActionProxy actionProxy = getActionProxy("/eliminar_contenido.action");
+		PublicacionesAction action = (PublicacionesAction) actionProxy.getAction();
+		assertNotNull("El objecto 'action' es nulo pero no debería serlo", action);
+		String result = actionProxy.execute();
+		
+		assertEquals("El método 'eliminarContenido()' debio retornar " + 
+		ActionSupport.SUCCESS + " pero no lo hizo", ActionSupport.SUCCESS, result);
+	}
+	
+	@Test
+	public void testEliminarPublicacionIncorrecta() throws Exception {
+		StrutsJsonDAO.dropTable("comentario");
+		StrutsJsonDAO.dropTable("usuario");
+		StrutsJsonDAO.create_table("usuario");
+		StrutsJsonDAO.populate_table("usuario");
+		StrutsJsonDAO.create_table("comentario");
+		StrutsJsonDAO.populate_table("comentario");
+		request.setParameter("comentarioBean.id_comentario", "8");
+		
+		ActionProxy actionProxy = getActionProxy("/eliminar_contenido.action");
+		PublicacionesAction action = (PublicacionesAction) actionProxy.getAction();
+		assertNotNull("El objecto 'action' es nulo pero no debería serlo", action);
+		String result = actionProxy.execute();
+		
+		assertEquals("El método 'eliminarContenido()' debio retornar " + 
+		ActionSupport.ERROR + " pero no lo hizo", ActionSupport.ERROR, result);
+	}
 
 }

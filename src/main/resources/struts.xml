@@ -37,7 +37,12 @@
 			<result name="error">/error.jsp</result>
 		</action>
 		
-		<action name="modificar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="modificar_contenido">
+		<action name="modificar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="modificarContenido">
+			<result name="success">/welcome.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<action name="eliminar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="eliminarContenido">
 			<result name="success">/welcome.jsp</result>
 			<result name="error">/error.jsp</result>
 		</action>

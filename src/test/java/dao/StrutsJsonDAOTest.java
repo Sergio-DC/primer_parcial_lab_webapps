@@ -152,7 +152,17 @@ public class StrutsJsonDAOTest {
 	public void testEliminarComentario() throws Exception{
 		int id_comentario = 5;
 		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
-		assertTrue("The message with ID: " + id_comentario +" was NOT deleted",eliminado);
+		assertTrue("La publicacion con ID: " + id_comentario +" no se pudo eliminar",eliminado);
+		id_comentario = 7;
+		eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
+		assertTrue("La publicacion con ID: " + id_comentario +" no se pudo eliminar",eliminado);
+	}
+	
+	@Test
+	public void testNoEliminarComentarioConIDInexistente() throws Exception{
+		int id_comentario = 8;
+		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
+		assertFalse("La publicacion con ID: " + id_comentario +" no se pudo eliminar",eliminado);
 	}
 
 }

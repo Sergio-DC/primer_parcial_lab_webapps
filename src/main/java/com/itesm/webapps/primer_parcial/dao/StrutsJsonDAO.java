@@ -290,28 +290,45 @@ public class StrutsJsonDAO {
 	 * @return true si el comentario ha sido eliminado
 	 **/
 	public static boolean eliminarComentario(int id_comentario) throws Exception {
-		ResultSet rs = null;		
-		String sql_busqueda = "SELECT * FROM comentario WHERE id_respuesta_a = ?";
-		try {
-			PreparedStatement ps = conn().prepareStatement(sql_busqueda);
-			ps.setString(1, Integer.toString(id_comentario));
-			rs = ps.executeQuery();
-			if(rs != null) {//El comentario tiene réplicas
-				while(rs.next()) {
-					//Pasamos el id_comentario de los comentarios que se encuentran un nivel abajo
-					eliminarComentario(rs.getInt(1));
-				}
-			} 
-			//El comentario ya no tiene réplicas
-			String sql = "DELETE FROM comentario WHERE id_comentario = ?";
-			ps = conn().prepareStatement(sql);
-			ps.setString(1, Integer.toString(id_comentario));
-			ps.execute();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}		
+		ResultSet rs = null;
+		String sql_busqueda_inicial = "SELECT * FROM comentario WHERE id_comentario = ?";
+	try {			
+		PreparedStatement ps = conn().prepareStatement(sql_busqueda_inicial);
+		ps.setString(1, Integer.toString(id_comentario));
+		rs = ps.executeQuery();
+		if(rs != null) {//El comentario tiene réplicas
+			if(!rs.next())
+				return false;
+		}
+		return true;
+	} catch (SQLException e) {
+		e.printStackTrace();
+		return false;
+	}	
+		
+		
+			
+//		String sql_busqueda = "SELECT * FROM comentario WHERE id_respuesta_a = ?";
+//		try {
+//			PreparedStatement ps = conn().prepareStatement(sql_busqueda);
+//			ps.setString(1, Integer.toString(id_comentario));
+//			rs = ps.executeQuery();
+//			if(rs != null) {//El comentario tiene réplicas
+//				while(rs.next()) {
+//					//Pasamos el id_comentario de los comentarios que se encuentran un nivel abajo
+//					eliminarComentario(rs.getInt(1));
+//				}
+//			} 
+//			//El comentario ya no tiene réplicas
+//			String sql = "DELETE FROM comentario WHERE id_comentario = ?";
+//			ps = conn().prepareStatement(sql);
+//			ps.setString(1, Integer.toString(id_comentario));
+//			ps.execute();
+//			return true;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}		
 	}	
 	/*Funciones para testing*/
 	
