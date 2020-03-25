@@ -53,11 +53,13 @@ public class PublicacionesAction extends ActionSupport{
 	/*El siguiente método elimina una publicación*/
 	public String eliminarContenido() {
 		boolean eliminado = false;
+		System.out.println("id_Comentario recibido: " + comentarioBean.getId_comentario());
 		try {
 			eliminado = StrutsJsonDAO.eliminarComentario(comentarioBean.getId_comentario());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+		System.out.println("Registro eliminado: " + eliminado);
 		if(eliminado)
 			return SUCCESS;
 		else

@@ -11,7 +11,9 @@
         <default-action-ref name="index"/>
 
         <action name="index">
-            <result>/welcome.jsp</result>
+             <result type="redirectAction">
+                <param name="actionName">cargar_contenido</param>
+            </result>
         </action>
 
 		<action name="login" class="com.itesm.webapps.primer_parcial.action.LoginAction" method="validar">

@@ -56,7 +56,7 @@ public class StrutsJsonDAO {
 			ps.execute();
 			ResultSet rs = ps.getGeneratedKeys();
 			while(rs.next()) {generatedKey = rs.getInt(1);}
-			System.out.println("GEN KEY: " + generatedKey);
+			conn().close();
 			return generatedKey;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,6 +83,7 @@ public class StrutsJsonDAO {
 			else
 			   statement.setNull(4, Types.INTEGER);
 			statement.execute();
+			conn().close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,6 +109,7 @@ public class StrutsJsonDAO {
 					usuario.setPass(rs.getString(3));
 					lista_usuario.add(usuario);
 				}
+				conn().close();
 				return lista_usuario;
 			}	
 		} catch (Exception e) {e.printStackTrace();}
@@ -134,6 +136,7 @@ public class StrutsJsonDAO {
 					comentario.setId_respuesta_a(rs.getInt(5));
 					lista_comentario.add(comentario);
 				}
+				conn().close();
 				return lista_comentario;
 			}	
 		} catch (Exception e) {e.printStackTrace();}
@@ -168,6 +171,7 @@ public class StrutsJsonDAO {
 					comentario_usuario.setId_respuesta_a(rs.getInt(6));
 					lista_comentario_usuario.add(comentario_usuario);
 				}
+				conn().close();
 				return lista_comentario_usuario;
 			}	
 		} catch (Exception e) {e.printStackTrace();}
@@ -193,6 +197,7 @@ public class StrutsJsonDAO {
 					usuario.setNombre(rs.getString(2));
 					usuario.setPass(rs.getString(3));
 				}
+				conn().close();
 				return usuario;
 			}
 		} catch (SQLException e) {e.printStackTrace();}
@@ -221,6 +226,7 @@ public class StrutsJsonDAO {
 					usuario.setNombre(rs.getString(2));
 					usuario.setPass(rs.getString(3));
 				}
+				conn().close();
 				return usuario;
 			}
 		} catch (Exception e) {e.printStackTrace();}
@@ -247,13 +253,14 @@ public class StrutsJsonDAO {
 					comentario.setFecha_publicacion(rs.getDate(3).toLocalDate());
 					comentario.setContenido(rs.getString(4));
 					comentario.setId_respuesta_a(rs.getInt(5));
-					
+					conn().close();
 					return comentario;
 				}
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			conn().close();
 		}
 		return null;
 	}
@@ -277,9 +284,11 @@ public class StrutsJsonDAO {
 			ps.setInt(4, id_usuario);
 			int rowsAffected = ps.executeUpdate();
 			System.out.println("rows: " + rowsAffected);
+			conn().close();
 			return rowsAffected;
 		} catch (Exception e) {
 			e.printStackTrace();
+			conn().close();
 			return 0;
 		}				
 	}
@@ -292,43 +301,43 @@ public class StrutsJsonDAO {
 	public static boolean eliminarComentario(int id_comentario) throws Exception {
 		ResultSet rs = null;
 		String sql_busqueda_inicial = "SELECT * FROM comentario WHERE id_comentario = ?";
-	try {			
-		PreparedStatement ps = conn().prepareStatement(sql_busqueda_inicial);
-		ps.setString(1, Integer.toString(id_comentario));
-		rs = ps.executeQuery();
-		if(rs != null) {//El comentario tiene réplicas
-			if(!rs.next())
-				return false;
-		}
-		return true;
-	} catch (SQLException e) {
-		e.printStackTrace();
-		return false;
-	}	
-		
-		
+		try {			
+			PreparedStatement ps = conn().prepareStatement(sql_busqueda_inicial);
+			ps.setString(1, Integer.toString(id_comentario));
+			rs = ps.executeQuery();
+			if(rs != null) {//El comentario tiene réplicas
+				if(!rs.next())
+					return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn().close();
+			return false;
+		}	
 			
-//		String sql_busqueda = "SELECT * FROM comentario WHERE id_respuesta_a = ?";
-//		try {
-//			PreparedStatement ps = conn().prepareStatement(sql_busqueda);
-//			ps.setString(1, Integer.toString(id_comentario));
-//			rs = ps.executeQuery();
-//			if(rs != null) {//El comentario tiene réplicas
-//				while(rs.next()) {
-//					//Pasamos el id_comentario de los comentarios que se encuentran un nivel abajo
-//					eliminarComentario(rs.getInt(1));
-//				}
-//			} 
-//			//El comentario ya no tiene réplicas
-//			String sql = "DELETE FROM comentario WHERE id_comentario = ?";
-//			ps = conn().prepareStatement(sql);
-//			ps.setString(1, Integer.toString(id_comentario));
-//			ps.execute();
-//			return true;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}		
+		String sql_busqueda = "SELECT * FROM comentario WHERE id_respuesta_a = ?";
+		try {
+			PreparedStatement ps = conn().prepareStatement(sql_busqueda);
+			ps.setString(1, Integer.toString(id_comentario));
+			rs = ps.executeQuery();
+			if(rs != null) {//El comentario tiene réplicas
+				while(rs.next()) {
+					//Pasamos el id_comentario de los comentarios que se encuentran un nivel abajo
+					eliminarComentario(rs.getInt(1));
+				}
+			} 
+			//El comentario ya no tiene réplicas
+			String sql = "DELETE FROM comentario WHERE id_comentario = ?";
+			ps = conn().prepareStatement(sql);
+			ps.setString(1, Integer.toString(id_comentario));
+			ps.execute();
+			conn().close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn().close();
+			return false;
+		}		
 	}	
 	/*Funciones para testing*/
 	
@@ -343,6 +352,7 @@ public class StrutsJsonDAO {
 		try {
 			Statement statement = conn().createStatement();
 			statement.executeUpdate(sql);
+			conn().close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -373,6 +383,7 @@ public class StrutsJsonDAO {
 			Statement statement = conn().createStatement();
 			statement.executeUpdate(ddl_statement);
 			br.close();
+			conn().close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -398,6 +409,7 @@ public class StrutsJsonDAO {
 				ps.execute();
 			}
 			br.close();
+			conn().close();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
