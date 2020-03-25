@@ -36,23 +36,23 @@ public class StrutsJsonDAOTest {
 		StrutsJsonDAO.populate_table("comentario");
 	}
 	
-	@Test
-	public void testCrearUsuario() {
-		int generatedKey = StrutsJsonDAO.insertarUsuario("Mariana", "tec45");
-		assertEquals("Hubo un error al insertar el registro de USUARIO", 6, generatedKey);
-	}
+//	@Test
+//	public void testCrearUsuario() {
+//		int generatedKey = StrutsJsonDAO.insertarUsuario("Mariana", "tec45");
+//		assertEquals("Hubo un error al insertar el registro de USUARIO", 6, generatedKey);
+//	}
+//	
+//	@Test
+//	public void testCrearUsuarioRepetido() {
+//		int generatedKey = StrutsJsonDAO.insertarUsuario("Ernesto", "aqua19");
+//		assertEquals("No se esperaba que el id generado fuera distinto de -1",-1, generatedKey);//Si es -1 el usuario se repitio
+//	}
 	
-	@Test
-	public void testCrearUsuarioRepetido() {
-		int generatedKey = StrutsJsonDAO.insertarUsuario("Ernesto", "aqua19");
-		assertEquals("No se esperaba que el id generado fuera distinto de -1",-1, generatedKey);
-	}
-	
-	@Test
-	public void testCrearNuevaPublicacion() {
-		boolean isRegistered = StrutsJsonDAO.insertarComentario(2, "Estoy aprendiendo a utilizar la función de publicaciones", null);
-		assertTrue("Hubo un error al crear una nueva publicación", isRegistered);
-	}
+//	@Test
+//	public void testCrearNuevaPublicacion() {
+//		boolean isRegistered = StrutsJsonDAO.insertarComentario(2, "Estoy aprendiendo a utilizar la función de publicaciones", null);
+//		assertTrue("Hubo un error al crear una nueva publicación", isRegistered);
+//	}
 	
 	/*La siguiente prueba simula a un usuario respondiendo el comentario de otra persona*/
 	@Test
@@ -150,18 +150,22 @@ public class StrutsJsonDAOTest {
 		
 	@Test
 	public void testEliminarComentario() throws Exception{
+		ArrayList<Integer> comentarios_eliminados = new ArrayList<Integer>();
 		int id_comentario = 5;
-		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
+		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario, comentarios_eliminados);
 		assertTrue("La publicacion con ID: " + id_comentario +" no se pudo eliminar",eliminado);
+		
+		comentarios_eliminados.clear();
 		id_comentario = 7;
-		eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
+		eliminado = StrutsJsonDAO.eliminarComentario(id_comentario, comentarios_eliminados);
 		assertTrue("La publicacion con ID: " + id_comentario +" no se pudo eliminar",eliminado);
 	}
 	
 	@Test
 	public void testNoEliminarComentarioConIDInexistente() throws Exception{
+		ArrayList<Integer> comentarios_eliminados = new ArrayList<Integer>();
 		int id_comentario = 8;
-		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
+		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario, comentarios_eliminados);
 		assertFalse("La publicacion con ID: " + id_comentario +" no se pudo eliminar",eliminado);
 	}
 
