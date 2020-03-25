@@ -11,10 +11,7 @@
         <default-action-ref name="index"/>
 
         <action name="index">
-            <result type="redirectAction">
-                <param name="actionName">HelloWorld</param>
-                <param name="namespace">/example</param>
-            </result>
+            <result>/welcome.jsp</result>
         </action>
 
 		<action name="login" class="com.itesm.webapps.primer_parcial.action.LoginAction" method="validar">
@@ -28,7 +25,7 @@
 		</action>
 		
 		<action name="cargar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="mostrarPublicaciones">
-			<result name="success">/publicaciones_cargadas.jsp</result>
+			<result name="success">/welcome.jsp</result>
 			<result name="error">/error.jsp</result>
 		</action>
 		

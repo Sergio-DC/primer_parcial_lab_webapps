@@ -42,7 +42,7 @@ public class RegistrarTest extends StrutsTestCase {
 	 * redirigirá al jsp 'registrar.jsp'
 	 */
 	@Test
-	public void testRegistrarUsuarioRepetido() throws Exception {
+	public void testNoRegistrarUsuarioRepetido() throws Exception {
 		//Crear tablas y llenarlas de registros de prueba
 			StrutsJsonDAO.dropTable("comentario");//Si la tabla comentario no existe no tomar acción
 			StrutsJsonDAO.dropTable("usuario");//Si la tabla comentario no existe no tomar acción
