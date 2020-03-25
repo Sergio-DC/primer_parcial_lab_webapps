@@ -134,7 +134,7 @@ public class StrutsJsonDAOTest {
 		assertEquals(usuario_esperado.getNombre(), usuario_actual.getNombre());
 		assertEquals(usuario_esperado.getPass(), usuario_actual.getPass());
 	}
-	
+	/*
 	@Test
 	public void testGetComentarioById() throws Exception {
 		int id_comentario = 3;
@@ -163,6 +163,6 @@ public class StrutsJsonDAOTest {
 		int id_comentario = 8;
 		boolean eliminado = StrutsJsonDAO.eliminarComentario(id_comentario);
 		assertFalse("La publicacion con ID: " + id_comentario +" no se pudo eliminar",eliminado);
-	}
+	}*/
 
 }

@@ -8,7 +8,7 @@
 
     <package name="default" namespace="/" extends="struts-default,json-default">
 
-        <default-action-ref name="index"/>
+        <default-action-ref name="login"/>
 
         <action name="index">
              <result type="redirectAction">
