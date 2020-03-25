@@ -1,5 +1,6 @@
 package com.itesm.webapps.primer_parcial.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.itesm.webapps.primer_parcial.dao.StrutsJsonDAO;
@@ -11,6 +12,7 @@ public class PublicacionesAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 	public Comentario comentarioBean;
 	public List<ComentarioUsuario> lista_comentario_usuario;
+	public ArrayList<Integer> registros_eliminados;
 	
 	public String mostrarPublicaciones() {
 		lista_comentario_usuario = StrutsJsonDAO.fetchComentarioMejorado();
@@ -55,7 +57,11 @@ public class PublicacionesAction extends ActionSupport{
 		boolean eliminado = false;
 		System.out.println("id_Comentario recibido: " + comentarioBean.getId_comentario());
 		try {
-			eliminado = StrutsJsonDAO.eliminarComentario(comentarioBean.getId_comentario());
+			registros_eliminados = new ArrayList<Integer>();
+			eliminado = StrutsJsonDAO.eliminarComentario(comentarioBean.getId_comentario(), registros_eliminados);
+			for (Integer item : registros_eliminados) {
+				System.out.println("Comentarios Eliminados:" + item);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -77,5 +83,11 @@ public class PublicacionesAction extends ActionSupport{
 	}
 	public void setLista_comentario_usuario(List<ComentarioUsuario> lista_comentario_usuario) {
 		this.lista_comentario_usuario = lista_comentario_usuario;
+	}
+	public ArrayList<Integer> getRegistros_eliminados() {
+		return registros_eliminados;
+	}
+	public void setRegistros_eliminados(ArrayList<Integer> registros_eliminados) {
+		this.registros_eliminados = registros_eliminados;
 	}
 }

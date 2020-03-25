@@ -22,7 +22,6 @@ import com.itesm.webapps.primer_parcial.pojo.Usuario;
 
 public class StrutsJsonDAO {
 	//private static String filePath = new File("").getAbsolutePath();
-	
 	/**
 	 * El siguiete método permite conectarnos a la base de datos 'twitter' 
 	 * @return devuelve la Conexión a la BD para poder realizar consultas o manipulación de datos a esta
@@ -298,7 +297,7 @@ public class StrutsJsonDAO {
 	 * @id_comentario número de comentario que será eliminado
 	 * @return true si el comentario ha sido eliminado
 	 **/
-	public static boolean eliminarComentario(int id_comentario) throws Exception {
+	public static boolean eliminarComentario(int id_comentario, ArrayList<Integer> registros_eliminados) throws Exception {
 		ResultSet rs = null;
 		String sql_busqueda_inicial = "SELECT * FROM comentario WHERE id_comentario = ?";
 		try {			
@@ -323,7 +322,7 @@ public class StrutsJsonDAO {
 			if(rs != null) {//El comentario tiene réplicas
 				while(rs.next()) {
 					//Pasamos el id_comentario de los comentarios que se encuentran un nivel abajo
-					eliminarComentario(rs.getInt(1));
+					eliminarComentario(rs.getInt(1), registros_eliminados);
 				}
 			} 
 			//El comentario ya no tiene réplicas
@@ -332,6 +331,7 @@ public class StrutsJsonDAO {
 			ps.setString(1, Integer.toString(id_comentario));
 			ps.execute();
 			conn().close();
+			registros_eliminados.add(id_comentario);
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();

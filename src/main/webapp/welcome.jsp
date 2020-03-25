@@ -4,35 +4,16 @@
 <head>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript">
-	/*function reflect(that) {
-
-		var countryName = $(that, "#countryVal").val();
-		var requestedData = "countryVal=" + countryName;
-		console.log("Req Data: " + requestedData);
-		$.getJSON("stateviacountry", requestedData, function(data) {
-			var sparrow = "";
-			console.log("datos:" + data);
-			$.each(data.dtoList, function() {
-
-				sparrow += "<option>" + this.state + "</option>";
-
-			});
-			sparrow += "";
-
-			$("#stateval").html(sparrow);
-		});
-	}*/
-	
 	function eliminar(that) {
 		var requestedData = "comentarioBean.id_comentario=" + that.value;
 		console.log("Push: " + that.value);
 		$.getJSON("eliminar_contenido", requestedData, function(data) {
-			var sparrow = "";
-			console.log("Filas Eliminadas:");
-			console.log("datos:" + data);
+			$.each(data.registros_eliminados, function(index, id_comentario) {//Número de Comentario que se eliminará
+				console.log("ID de Comentario eliminado: " + id_comentario);
+				var row = $('.bEliminar[value='+id_comentario+']').parent().parent();
+				$(row).hide();
+			});
 
-			var row = $(that,".bEliminar").parent().parent();
-			$(row).hide();
 		});
 	}
 </script>

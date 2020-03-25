@@ -6,7 +6,7 @@
     <constant name="struts.enable.DynamicMethodInvocation" value="false"/>
     <constant name="struts.devMode" value="true"/>
 
-    <package name="default" namespace="/" extends="struts-default">
+    <package name="default" namespace="/" extends="struts-default,json-default">
 
         <default-action-ref name="index"/>
 
@@ -42,7 +42,7 @@
 		</action>
 		
 		<action name="eliminar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="eliminarContenido">
-			<result name="success">/welcome.jsp</result>
+			<result name="success" type="json"></result>
 			<result name="error">/error.jsp</result>
 		</action>
 					
