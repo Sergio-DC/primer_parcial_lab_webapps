@@ -14,14 +14,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <title>Bienvenido a twitter</title>
+    <title>Registrarse en twitter</title>
 </head>
 <body style="background-color: rgb(21, 32, 43);">
 <div class="jumbotron text-center">
     <img src="https://www.pinclipart.com/picdir/big/388-3884568_twitter-black-circle-twitter-round-logo-png-clipart.png" class="rounded" alt="Twitter" width="304" height="236">
 </div>
 <div class="container" style="color:white;">
-    <form action="login">
+    <h2>Registrate en Twitter</h2>
+    <form action="registrar">
         <div class="form-group">
             <label for="user">User:</label>
             <input type="text" class="form-control" id="user" name="user">
@@ -30,9 +31,13 @@
             <label for="pass">Password:</label>
             <input type="password" class="form-control" id="pass" name="pass">
         </div>
-        <button type="submit" class="btn btn-primary">Log in</button>
+        <div class="form-group">
+            <label for="passC">Confirmar Password:</label>
+            <input type="password" class="form-control" id="passC" name="passC">
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
     </form>
-    <a href="register.jsp" class="text-decoration-none">Registrarse</a>
+    <a href="login.jsp" class="text-decoration-none">Log in</a>
 </div>
 
 </body>

@@ -8,19 +8,28 @@ import sun.tools.jconsole.JConsole;
 public class LoginAction extends ActionSupport{
 	private static final long serialVersionUID = 1L;
 
-	public Usuario usuarioBean;
-	
-	public Usuario getUsuarioBean() {
-		return usuarioBean;
+	public String pass;
+	public String user;
+
+	public String getPass() {
+		return pass;
 	}
 
-	public void setUsuarioBean(Usuario usuarioBean) {
-		this.usuarioBean = usuarioBean;
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	public String validar() {
-		System.out.println("password:" +getUsuarioBean().getPass());
-		Usuario usuario = StrutsJsonDAO.getUsuarioByNameAndPass(getUsuarioBean().getNombre(), getUsuarioBean().getPass());
+		System.out.println("User: " +getUser()+ " password: " +getPass());
+		Usuario usuario = StrutsJsonDAO.getUsuarioByNameAndPass(getUser(), getPass());
 		if(usuario.getNombre() != null)
 			return SUCCESS;
 		else
