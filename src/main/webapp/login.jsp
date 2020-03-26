@@ -32,7 +32,7 @@
         </div>
         <button class="btn btn-primary" onclick="redireccionar()" type="submit">Log in</button>
     </form>
-    <a href="register.jsp" class="text-decoration-none">Registrarse</a>
+    <a href="../register.jsp" class="text-decoration-none">Registrarse</a>
 </div>
 
 <script type="text/javascript">
@@ -71,12 +71,11 @@
 				console.log(data.autenticado);
 				autenticado = data.autenticado;						
 			}); */
-				
-		});
+		//});
 		
 				
 
-	}
+	//}
 </script>
 
 </body>
