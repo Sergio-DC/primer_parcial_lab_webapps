@@ -22,12 +22,12 @@
 
 		<action name="validar" class="com.itesm.webapps.primer_parcial.action.LoginAction" method="validar">
 				<result name="success">/feed.jsp</result>
-				<result name="input">/error.jsp</result>
+				<result name="input">/login.jsp</result>
 		</action>
 		
 		<action name="registrar" class="com.itesm.webapps.primer_parcial.action.RegistrarAction" method ="registrarUsuario">
 			<result name="success">/login.jsp</result>
-			<result name="input">/error.jsp</result>
+			<result name="input">/register.jsp</result>
 		</action>
 		
 		<action name="cargar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="mostrarPublicaciones">
@@ -35,18 +35,15 @@
 		</action>
 		
 		<action name="crear_nuevo_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="crearNuevoContenido">
-			<result name="success">/welcome.jsp</result>
-			<result name="error">/error.jsp</result>
+			<result name="success" type="json"/>
 		</action>
 		
 		<action name="modificar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="modificarContenido">
-			<result name="success">/welcome.jsp</result>
-			<result name="error">/error.jsp</result>
+			<result name="success" type="json"></result>
 		</action>
 		
 		<action name="eliminar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="eliminarContenido">
 			<result name="success" type="json"></result>
-			<result name="error">/error.jsp</result>
 		</action>
 					
     </package>

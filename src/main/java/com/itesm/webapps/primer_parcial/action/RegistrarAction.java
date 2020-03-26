@@ -3,8 +3,11 @@ package com.itesm.webapps.primer_parcial.action;
 import com.itesm.webapps.primer_parcial.dao.StrutsJsonDAO;
 import com.itesm.webapps.primer_parcial.pojo.Usuario;
 import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.interceptor.SessionAware;
 
-public class RegistrarAction extends ActionSupport{
+import java.util.Map;
+
+public class RegistrarAction extends ActionSupport implements SessionAware {
 	private static final long serialVersionUID = 1L;
 	public String pass;
 	public String user;
@@ -43,5 +46,10 @@ public class RegistrarAction extends ActionSupport{
 
 	public void setPassC(String passC) {
 		this.passC = passC;
+	}
+	Map<String, Object> session;
+	@Override
+	public void setSession(Map<String, Object> map) {
+		this.session = session;
 	}
 }

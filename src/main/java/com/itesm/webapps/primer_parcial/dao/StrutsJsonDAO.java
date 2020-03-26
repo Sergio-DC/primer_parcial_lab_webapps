@@ -152,9 +152,9 @@ public class StrutsJsonDAO {
 		ResultSet rs = null;
 		List<ComentarioUsuario> lista_comentario_usuario = new ArrayList<ComentarioUsuario>();
 		String sql = "select usuario.id_usuario, usuario.nombre, comentario.id_comentario, ";
-		sql +=	"comentario.fecha_publicacion, comentario.contenido, comentario.id_respuesta_a ";
+		sql +=	"comentario.fecha_publicacion, comentario.contenido, comentario.id_respuesta_a ,comentario.eliminado ";
 		sql +=	"from comentario JOIN usuario ";
-		sql +=	"ON usuario.id_usuario = comentario.id_usuario";
+		sql +=	"ON usuario.id_usuario = comentario.id_usuario ORDER BY comentario.fecha_publicacion ASC";
 		try {
 			Statement stmt = conn().createStatement();
 			rs = stmt.executeQuery(sql);			
@@ -168,6 +168,7 @@ public class StrutsJsonDAO {
 					comentario_usuario.setFecha_publicacion(rs.getDate(4).toLocalDate());
 					comentario_usuario.setContenido(rs.getString(5));
 					comentario_usuario.setId_respuesta_a(rs.getInt(6));
+					comentario_usuario.setEliminado(rs.getInt(7));
 					lista_comentario_usuario.add(comentario_usuario);
 				}
 				conn().close();
@@ -268,19 +269,17 @@ public class StrutsJsonDAO {
 	 * de su interés, solo podrá modificar comentarios que hayan sido creados por el
 	 * Ojo: La fecha se actualiza automáticamente
 	 * @param id_comentario
-	 * @param id_usuario
 	 * @param contenido es el texto/contenido que tendrá la publicación
 	 * @return el número filas que fueron modificada | 0 si no se modifico algún registro
 	 */
-	public static int modificarComentario(int id_comentario, int id_usuario, String contenido) throws Exception{
+	public static int modificarComentario(int id_comentario, String contenido) throws Exception{
 		String modify_query = "UPDATE comentario SET fecha_publicacion = ?, contenido = ? ";
-		modify_query += "WHERE id_comentario = ? AND id_usuario = ?";
+		modify_query += "WHERE id_comentario = ?";
 		try {
 			PreparedStatement ps = conn().prepareStatement(modify_query);
 			ps.setDate(1, new Date(new java.util.Date().getTime()));
 			ps.setString(2 , contenido);
 			ps.setInt(3, id_comentario);
-			ps.setInt(4, id_usuario);
 			int rowsAffected = ps.executeUpdate();
 			System.out.println("rows: " + rowsAffected);
 			conn().close();
@@ -297,47 +296,19 @@ public class StrutsJsonDAO {
 	 * @id_comentario número de comentario que será eliminado
 	 * @return true si el comentario ha sido eliminado
 	 **/
-	public static boolean eliminarComentario(int id_comentario, ArrayList<Integer> registros_eliminados) throws Exception {
-		ResultSet rs = null;
-		String sql_busqueda_inicial = "SELECT * FROM comentario WHERE id_comentario = ?";
+	public static int eliminarComentario(int id_comentario) throws Exception {
+		String delete_query = "UPDATE comentario SET eliminado = 1 ";
+		delete_query += "WHERE id_comentario = ?";
 		try {			
-			PreparedStatement ps = conn().prepareStatement(sql_busqueda_inicial);
-			ps.setString(1, Integer.toString(id_comentario));
-			rs = ps.executeQuery();
-			if(rs != null) {//El comentario tiene réplicas
-				if(!rs.next())
-					return false;
-			}
+			PreparedStatement ps = conn().prepareStatement(delete_query);
+			ps.setInt(1, id_comentario);
+			int rowsAffected = ps.executeUpdate();
+			return rowsAffected;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn().close();
-			return false;
-		}	
-			
-		String sql_busqueda = "SELECT * FROM comentario WHERE id_respuesta_a = ?";
-		try {
-			PreparedStatement ps = conn().prepareStatement(sql_busqueda);
-			ps.setString(1, Integer.toString(id_comentario));
-			rs = ps.executeQuery();
-			if(rs != null) {//El comentario tiene réplicas
-				while(rs.next()) {
-					//Pasamos el id_comentario de los comentarios que se encuentran un nivel abajo
-					eliminarComentario(rs.getInt(1), registros_eliminados);
-				}
-			} 
-			//El comentario ya no tiene réplicas
-			String sql = "DELETE FROM comentario WHERE id_comentario = ?";
-			ps = conn().prepareStatement(sql);
-			ps.setString(1, Integer.toString(id_comentario));
-			ps.execute();
-			conn().close();
-			registros_eliminados.add(id_comentario);
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			conn().close();
-			return false;
-		}		
+			return 0;
+		}
 	}	
 	/*Funciones para testing*/
 	

@@ -17,10 +17,10 @@
     <title>Feed</title>
 </head>
 <body style="background-color: rgb(21, 32, 43);">
-<div class="modal" id="answerModal">
+<div class="modal" id="answerModal" >
     <div class="modal-dialog">
         <div class="modal-content">
-
+            <input type="hidden" id="ansId" name="ansId" value="0">
             <!-- Modal Header -->
             <div class="modal-header">
                 <h4 class="modal-title">Responder a comentario</h4>
@@ -30,13 +30,13 @@
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="form-group">
-                    <textarea class="form-control" id="answerComment" rows="3" placeholder="Escribe tu comentario aqui"></textarea>
+                    <textarea class="form-control" id="answerComment" rows="3" placeholder="Escribe tu comentario aqui" id="answerComment"></textarea>
                 </div>
             </div>
 
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" data-dismiss="modal">Comment</button>
+                <button type="submit" class="btn btn-primary" data-dismiss="modal" id="answerCommentB">Comment</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
 
@@ -50,6 +50,7 @@
 
             <!-- Modal Header -->
             <div class="modal-header">
+                <input type="hidden" id="editId" name="editId" value="0">
                 <h4 class="modal-title">Modificar comentario</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
@@ -63,7 +64,7 @@
 
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" data-dismiss="modal">Edit</button>
+                <button type="submit" class="btn btn-primary" data-dismiss="modal" id="editCommentB">Edit</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
 
@@ -86,7 +87,7 @@
     <div class="form-group">
         <textarea class="form-control" id="newComment" rows="3" placeholder="Escribe tu comentario aqui"></textarea>
         <br>
-        <button type="submit" class="btn btn-primary float-right">Comment</button>
+        <button type="submit" class="btn btn-primary float-right" id="newCommentB">Comment</button>
     </div>
 
 </div>
@@ -119,6 +120,94 @@
         getPost()
     });
 
+    $("#newCommentB").click(function(){
+        newPost(-1);
+    });
+
+    $("#answerCommentB").click(function(){
+        newPost($("#ansId").val());
+    });
+
+    $("#editCommentB").click(function(){
+        editPost();
+    });
+
+    function answer(ids) {
+        $("#ansId").val(ids);
+        //newPost(id);
+    }
+
+    function edit(ids) {
+        $("#editId").val(ids);
+        $("#editComment").val($("#editText"+ids+"").val());
+    }
+
+    function editPost() {
+        var idC = $("#editId").val();
+        var comentario = $("#editComment").val();
+        var json = {"comentario":comentario,"idC":idC};
+        $.ajax({
+            url: "modificar_contenido",
+            type: 'POST',
+            dataType: 'json',
+            data: json,
+            success:function(response){
+                alert("Comentario Modificado");
+                $("#comentarios").empty();
+                getPost();
+
+            },
+            error:function(jqXhr, textStatus, errorThrown){
+                alert("Error al comentar");
+            }
+        });
+    }
+
+    function borrar(ids) {
+        console.log(ids);
+        var json = {"idC":ids};
+        $.ajax({
+            url: "eliminar_contenido",
+            type: 'POST',
+            dataType: 'json',
+            data: json,
+            success:function(response){
+                alert("Comentario eliminado");
+                $("#comentarios").empty();
+                getPost();
+
+            },
+            error:function(jqXhr, textStatus, errorThrown){
+                alert("Error al eliminar");
+            }
+        });
+    }
+
+
+
+    function newPost(respuesta) {
+        if(respuesta == -1) var comentario = $('#newComment').val();
+        else var comentario = $('#answerComment').val()
+        var resA = respuesta;
+        var json = {"comentario":comentario,"resA":resA};
+        $.ajax({
+            url: "crear_nuevo_contenido",
+            type: 'POST',
+            dataType: 'json',
+            data: json,
+            success:function(response){
+                alert("Comentario agregado");
+                $("#newComment").val("");
+                $("#answerComment").val("");
+                $("#comentarios").empty();
+                getPost();
+
+            },
+            error:function(jqXhr, textStatus, errorThrown){
+                alert("Error al comentar");
+            }
+        });
+    }
     function getPost(){
 
 
@@ -130,11 +219,11 @@
             data: json,
             success:function(response){
                 console.log("Response: ");
+                console.log(response);
                 response.lista_comentario_usuario.forEach(function(index) {
                     var fecha = "";
-                    fecha = "" +index.fecha_publicacion.dayOfMonth+ " "
-                    console.log("Index: ");
-                    console.log(index);
+                    fecha = "" +index.fecha_publicacion.dayOfMonth+ "-" +index.fecha_publicacion.monthValue+ "-" +index.fecha_publicacion.year;
+                    if(index.eliminado == 1) $("#com"+index.id_comentario+"").hide();
                     if(index.id_respuesta_a == 0) {
                     $("#comentarios").append(" <br>\n" +
                         "    <div class=\"card\" id=\"com"+index.id_comentario+"\">\n" +
@@ -150,34 +239,42 @@
                         "                </div>\n" +
                         "\n" +
                         "            </div>​\n" +
-                        "            <p class=\"card-text\">"+index.contenido+"</p>\n" +
-                        "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#answerModal\" class=\"card-link\">responder</a>\n" +
-                        "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#editModal\" class=\"card-link\">editar</a>\n" +
-                        "            <a href=\"#\" class=\"card-link\">borrar</a>\n" +
+                        "            <input type=\"hidden\" id=\"editText"+index.id_comentario+"\" name=\"editText\" value=\""+index.contenido+"\">" +
+                        "            <p class=\"card-text\">"+fecha+"<br>"+index.contenido+"</p>\n" +
+                        "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#answerModal\" class=\"card-link\" id=\"res"+index.id_comentario+"\" onclick=\"answer("+index.id_comentario+")\">responder</a>\n" +
+                        "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#editModal\" class=\"card-link\" id=\"edit"+index.id_comentario+"\" onclick=\"edit("+index.id_comentario+")\">editar</a>\n" +
+                        "            <a href=\"#\" class=\"card-link\" onclick=\"borrar("+index.id_comentario+")\">borrar</a>\n" +
                         "        </div>\n" +
-                        "    </div>");} else {
-                        $("#com"+index.id_respuesta_a+"").after(" <br>\n" +
-                            "    <div class=\"card col-8\">\n" +
-                            "        <div class=\"card-body\">\n" +
-                            "            <div id=\"container\" style=\"white-space:nowrap\" class=\"card-title\">\n" +
-                            "\n" +
-                            "                <div id=\"image\" style=\"display:inline;\">\n" +
-                            "                    <img src=\"https://www.pinclipart.com/picdir/big/388-3884568_twitter-black-circle-twitter-round-logo-png-clipart.png\" class=\"rounded\" alt=\"Twitter\" width=\"20\" height=\"20\"/>\n" +
-                            "                </div>\n" +
-                            "\n" +
-                            "                <div id=\"texts\" style=\"display:inline; white-space:nowrap;\">\n" +
-                            "                    "+index.nombre+"\n" +
-                            "                </div>\n" +
-                            "\n" +
-                            "            </div>​\n" +
-                            "            <p class=\"card-text\">"+index.contenido+"</p>\n" +
-                            "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#answerModal\" class=\"card-link\">responder</a>\n" +
-                            "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#editModal\" class=\"card-link\">editar</a>\n" +
-                            "            <a href=\"#\" class=\"card-link\">borrar</a>\n" +
-                            "        </div>\n" +
-                            "    </div>");
+                        "    </div>");}
+                });
+                response.lista_comentario_usuario.forEach(function(index) {
+                    var fecha = "";
+                    fecha = "" +index.fecha_publicacion.dayOfMonth+ "-" +index.fecha_publicacion.monthValue+ "-" +index.fecha_publicacion.year;
+                    if(index.eliminado == 1) $("#com"+index.id_comentario+"").hide();
+                        if(index.id_respuesta_a != 0) {
+                            $("#com"+index.id_respuesta_a+"").after(" <br>\n" +
+                                "    <div class=\"card col-8\" id=\"com"+index.id_comentario+"\">\n" +
+                                "        <div class=\"card-body\">\n" +
+                                "            <div id=\"container\" style=\"white-space:nowrap\" class=\"card-title\">\n" +
+                                "\n" +
+                                "                <div id=\"image\" style=\"display:inline;\">\n" +
+                                "                    <img src=\"https://www.pinclipart.com/picdir/big/388-3884568_twitter-black-circle-twitter-round-logo-png-clipart.png\" class=\"rounded\" alt=\"Twitter\" width=\"20\" height=\"20\"/>\n" +
+                                "                </div>\n" +
+                                "\n" +
+                                "                <div id=\"texts\" style=\"display:inline; white-space:nowrap;\">\n" +
+                                "                    "+index.nombre+"\n" +
+                                "                </div>\n" +
+                                "\n" +
+                                "            </div>​\n" +
+                                "            <input type=\"hidden\" id=\"editText"+index.id_comentario+"\" name=\"editText\" value=\""+index.contenido+"\">" +
+                                "            <p class=\"card-text\">"+fecha+"<br>"+index.contenido+"</p>\n" +
+                                "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#answerModal\" class=\"card-link\" id=\"res"+index.id_comentario+"\" onclick=\"answer("+index.id_comentario+")\">responder</a>\n" +
+                                "            <a href=\"#\" data-toggle=\"modal\" data-target=\"#editModal\" class=\"card-link\" id=\"edit"+index.id_comentario+"\" onclick=\"edit("+index.id_comentario+")\">editar</a>\n" +
+                                "            <a href=\"#\" class=\"card-link\" onclick=\"borrar("+index.id_comentario+")\">borrar</a>\n" +
+                                "        </div>\n" +
+                                "    </div>");
 
-                    }
+                        }
                 });
 
             },

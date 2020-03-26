@@ -30,52 +30,13 @@
             <label for="pass">Password:</label>
             <input type="password" class="form-control" id="pass" name="pass">
         </div>
-        <button class="btn btn-primary" onclick="redireccionar()" type="submit">Log in</button>
+        <button class="btn btn-primary"  type="submit">Log in</button>
     </form>
-    <a href="../register.jsp" class="text-decoration-none">Registrarse</a>
+    <a href="register.jsp" class="text-decoration-none">Registrarse</a>
 </div>
 
 <script type="text/javascript">
 
-	/* function redireccionar() {
-		var user = $("#user").val();
-		var pass = $("#pass").val();
-		var requestedData =  { 
-			user : user,
-			pass : pass
-		}
-		console.log("User: " + requestedData.user);
-		console.log("Pass: " + requestedData.pass);
-		$("#formulario").submit(function(e){
-			var autenticado;
-			$.ajax({
-				  type: 'POST',
-				  url: "validar",
-				  data: JSON.stringify(requestedData),
-				  success: function(data) {
-					  console.log(data.autenticado);
-						autenticado = data.autenticado;  
-				  },
-				  dataType: "json",
-				  async:false
-				});
-			if(autenticado == "false") {
-				alert("False");
-				e.preventDefault();
-			}
-			else{
-				alert("Verdadero");
-				return false;
-			} */
-			/* $.post("validar", JSON.stringify(requestedData), function(data) {
-				console.log(data.autenticado);
-				autenticado = data.autenticado;						
-			}); */
-		//});
-		
-				
-
-	//}
 </script>
 
 </body>

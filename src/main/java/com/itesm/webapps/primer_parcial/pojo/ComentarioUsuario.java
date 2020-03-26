@@ -7,6 +7,7 @@ public class ComentarioUsuario {
 	private LocalDate fecha_publicacion;
 	private String contenido;
 	private int id_respuesta_a;
+	private int eliminado;
 	
 	private int id_usuario;
 	private String nombre;
@@ -47,4 +48,11 @@ public class ComentarioUsuario {
 		this.nombre = nombre;
 	}
 
+	public int getEliminado() {
+		return eliminado;
+	}
+
+	public void setEliminado(int eliminado) {
+		this.eliminado = eliminado;
+	}
 }

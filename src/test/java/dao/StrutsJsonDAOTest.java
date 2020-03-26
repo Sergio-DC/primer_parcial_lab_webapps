@@ -63,7 +63,8 @@ public class StrutsJsonDAOTest {
 		boolean isRegistered = StrutsJsonDAO.insertarComentario(generatedKey, "Hola David soy Mariana y ya te comente", 7);
 		assertTrue("Hubo un error al responderle al mensaje con ID: " + 7, isRegistered);
 	}
-	@Test
+
+	/*@Test
 	public void testModificarComentarioCreadoPorElMismoUsuario() throws Exception{
 		//Se modificara el comentario 6 realizado por el usuario 1(Carlos)
 		//Se pondrá a pueba la correcta modificación del comentario realizado por el mismo usuario 
@@ -91,7 +92,7 @@ public class StrutsJsonDAOTest {
 		//que creo el comentario/publicación
 		int rowsAffected = StrutsJsonDAO.modificarComentario(6, 2, "He modificado mi publicación");
 		assertEquals(0, rowsAffected);
-	}
+	}*/
 	
 	/*Si la tabla se encuentra vacia envar msj por consola indicando que esta vacia*/
 	@Test
