@@ -31,8 +31,7 @@
 		</action>
 		
 		<action name="cargar_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="mostrarPublicaciones">
-			<result name="success">/welcome.jsp</result>
-			<result name="error">/error.jsp</result>
+			<result name="success" type="json"/>
 		</action>
 		
 		<action name="crear_nuevo_contenido" class="com.itesm.webapps.primer_parcial.action.PublicacionesAction" method="crearNuevoContenido">
