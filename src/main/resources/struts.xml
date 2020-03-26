@@ -15,10 +15,14 @@
                 <param name="actionName">cargar_contenido</param>
             </result>
         </action>
+        
+        <action name="login">
+        	<result>/login.jsp</result>
+        </action>
 
-		<action name="login" class="com.itesm.webapps.primer_parcial.action.LoginAction" method="validar">
+		<action name="validar" class="com.itesm.webapps.primer_parcial.action.LoginAction" method="validar">
 				<result name="success">/feed.jsp</result>
-				<result name="input">/login.jsp</result>
+				<result name="input">/error.jsp</result>
 		</action>
 		
 		<action name="registrar" class="com.itesm.webapps.primer_parcial.action.RegistrarAction" method ="registrarUsuario">

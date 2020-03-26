@@ -21,7 +21,7 @@
     <img src="https://www.pinclipart.com/picdir/big/388-3884568_twitter-black-circle-twitter-round-logo-png-clipart.png" class="rounded" alt="Twitter" width="304" height="236">
 </div>
 <div class="container" style="color:white;">
-    <form action="login">
+    <form action="validar" id="formulario">
         <div class="form-group">
             <label for="user">User:</label>
             <input type="text" class="form-control" id="user" name="user">
@@ -30,10 +30,54 @@
             <label for="pass">Password:</label>
             <input type="password" class="form-control" id="pass" name="pass">
         </div>
-        <button type="submit" class="btn btn-primary">Log in</button>
+        <button class="btn btn-primary" onclick="redireccionar()" type="submit">Log in</button>
     </form>
     <a href="register.jsp" class="text-decoration-none">Registrarse</a>
 </div>
+
+<script type="text/javascript">
+
+	/* function redireccionar() {
+		var user = $("#user").val();
+		var pass = $("#pass").val();
+		var requestedData =  { 
+			user : user,
+			pass : pass
+		}
+		console.log("User: " + requestedData.user);
+		console.log("Pass: " + requestedData.pass);
+		$("#formulario").submit(function(e){
+			var autenticado;
+			$.ajax({
+				  type: 'POST',
+				  url: "validar",
+				  data: JSON.stringify(requestedData),
+				  success: function(data) {
+					  console.log(data.autenticado);
+						autenticado = data.autenticado;  
+				  },
+				  dataType: "json",
+				  async:false
+				});
+			if(autenticado == "false") {
+				alert("False");
+				e.preventDefault();
+			}
+			else{
+				alert("Verdadero");
+				return false;
+			} */
+			/* $.post("validar", JSON.stringify(requestedData), function(data) {
+				console.log(data.autenticado);
+				autenticado = data.autenticado;						
+			}); */
+				
+		});
+		
+				
+
+	}
+</script>
 
 </body>
 </html>

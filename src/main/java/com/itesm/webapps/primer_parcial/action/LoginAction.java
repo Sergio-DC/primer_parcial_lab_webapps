@@ -10,6 +10,11 @@ public class LoginAction extends ActionSupport{
 
 	public String pass;
 	public String user;
+	public String autenticado = "false";//Indica si algún usuario se autenticado
+
+	public String getAutenticado() {
+		return autenticado;
+	}
 
 	public String getPass() {
 		return pass;
@@ -30,10 +35,13 @@ public class LoginAction extends ActionSupport{
 	public String validar() {
 		System.out.println("User: " +getUser()+ " password: " +getPass());
 		Usuario usuario = StrutsJsonDAO.getUsuarioByNameAndPass(getUser(), getPass());
-		if(usuario.getNombre() != null)
+		if(usuario.getNombre() != null) {
+			this.autenticado = "true";
 			return SUCCESS;
-		else
+		} else {
+			this.autenticado = "false";
 			return INPUT;
+		}
 	}
 	
 	public String validarStuff() {
